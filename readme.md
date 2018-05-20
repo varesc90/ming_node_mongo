@@ -3,3 +3,4 @@
 ## Modules used
 
 - Mongodb
+- Mongoose ORM (Object Relation Mapping)
