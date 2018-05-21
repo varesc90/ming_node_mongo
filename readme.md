@@ -6,3 +6,9 @@
 - Mongoose ORM (Object Relation Mapping)
 - Express
 - Body-parser
+
+### DEV
+- Mocha
+- Expect
+- Nodemon
+- Supertest
