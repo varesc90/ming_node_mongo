@@ -1,41 +1,29 @@
-const mongoose = require('mongoose');
+var express = require("express");
+var bodyParser = require("body-parser");
 
 
-mongoose.Promise = global.Promise; // Tell Mongoose which promise lib we want to use. In this case, Global
+var {mongoose} = require("./db/mongoose");
+var {Todo} = require("./models/todo");
+var {User} = require("./models/user");
 
-mongoose.connect('mongodb://localhost:27017/TodoApp');
+var app = express();
 
-var Todo = mongoose.model('Todo',{
-    text:{
-        type: String
-    },
-    completed:{
-        type: Boolean
-    },
-    compleatedAt:{
-        type: Number
-    }
+app.use(bodyParser.json());
+
+app.post('/todos',(req,res)=>{
+    var todo = new Todo({
+        text:req.body.text
+    });
+
+    todo.save().then((doc)=>{
+        res.send(doc);
+    },(err)=>{
+        res.status(400).send(err);
+    });
 });
 
 
-var newTodo = new Todo({
-    text:"Learn Node",
+app.listen(3000,()=>{
+    console.log("Started on port 3000");
 });
 
-newTodo.save().then((doc)=>{
-    console.log(`Saved todo`,doc);
-},(err)=>{
-    console.log('Unable to save Todo');
-});
-
-var anotherTodo = new Todo({
-    text:"Sleep",
-    completed:false,
-    completedAt:12
-});
-
-anotherTodo.save().then((doc)=>{
-    console.log(JSON.stringify(doc));
-},(err)=>{
-    console.log('Unable to save Todo');
-});

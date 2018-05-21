@@ -1,6 +1,8 @@
 # This is the Repo that I use to learn NODE VS MONGODB
 
-## Modules used
+## Package used
 
 - Mongodb
 - Mongoose ORM (Object Relation Mapping)
+- Express
+- Body-parser
