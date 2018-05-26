@@ -1,13 +1,15 @@
 const expect = require("expect");
 const request = require("supertest");
-
+const {ObjectID} = require('mongodb');
 const {app} = require("./../server");
 const {Todo} = require("./../models/todo");
 
 const todos = [
     {
+        _id: new ObjectID(),
         text:"first test todo"
     }, {
+        _id: new ObjectID(),
         text:"second test todo"
     }];
 beforeEach((done)=>{
@@ -62,15 +64,45 @@ describe('POST /todos',()=> {
 });
 
 
-    describe('GET /todos', () =>{
-        it('Should get all todos',(done)=>{
-            request(app)
-                .get('/todos')
-                .expect(200)
-                .expect((res)=>{
-                    expect(res.body.todos.length).toBe(2);
-                }).end(done);
-        });
+describe('GET /todos', () =>{
+    it('Should get all todos',(done)=>{
+        request(app)
+            .get('/todos')
+            .expect(200)
+            .expect((res)=>{
+                expect(res.body.todos.length).toBe(2);
+            }).end(done);
+    });
+
+
+
+
+
+});
+
+describe('GET /todos/:id', () =>{
+    it('Should get one todo',(done)=>{
+        request(app)
+            .get(`/todos/${todos[0]._id.toString()}`)
+            .expect(200)
+            .expect((res)=>{
+                expect(res.body.text).toBe(todos[0].text);
+            }).end(done);
+    });
+    it('Should return 404 if not found',(done)=>{
+        request(app)
+            .get(`/todos/5b06cf3e30b28974df13abec`)
+            .expect(404).end(done);
+    });
+
+    it('Should return 400 if invalid id',(done)=>{
+        request(app)
+            .get(`/todos/12`)
+            .expect(400).end(done);
+    });
+
+
+
 
 
 
