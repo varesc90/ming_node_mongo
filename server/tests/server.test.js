@@ -107,3 +107,55 @@ describe('GET /todos/:id', () =>{
 
 
 });
+
+describe('DELETE /todos/:id',()=>{
+    it('Should remove a todo',(done)=>{
+        var second_todo_id = todos[1]._id.toString();
+        request(app)
+            .delete(`/todos/${second_todo_id}`)
+            .expect(200)
+            .expect((res)=>{
+                expect(res.body.todo._id).toBe(second_todo_id);
+            }).end((err,res)=>{
+            if(err){
+                return done(err);
+            }
+            Todo.findById(second_todo_id).then((todo)=>{
+                expect(todo).toBeFalsy();
+                done();
+            }).catch((e)=>{
+                done(e);
+            });
+        });
+    });
+
+    it('Should return 404',(done)=>{
+        var second_todo_id = todos[1]._id.toString();
+        request(app)
+            .delete(`/todos/${second_todo_id}`)
+            .expect(200)
+            .expect((res)=>{
+                expect(res.body.todo._id).toBe(second_todo_id);
+            }).end((err,res)=>{
+            if(err){
+                return done(err);
+            }
+            request(app)
+                .delete(`/todos/${second_todo_id}`)
+                .expect(404);
+        });
+        done();
+    });
+
+    it('Shoud return 404 if objectID is invalid',(done)=>{
+        var second_todo_id = 'asdf';
+        request(app)
+            .delete(`/todos/5b06cf3e30b28974df13ab`)
+            .expect(404).end((err,res)=>{
+            if(err){
+                return done(err);
+            }
+            done();
+        });
+    });
+});

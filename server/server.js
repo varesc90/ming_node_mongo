@@ -62,21 +62,17 @@ app.get('/todos/:id',(req,res)=>{
 app.delete('/todos/:id',(req,res)=>{
     var id = req.params.id;
     if(!ObjectID.isValid(id)){
-       return res.status(400).send('invalid Id');
+       return res.status(404).send('invalid Id');
     }
     Todo.findByIdAndRemove(id).then((todo)=>{
         if(todo){
-           return res.status(200).send(todo);
+           return res.status(200).send({todo});
         }
-
         return res.status(404).send("Could not find your Todo");
+    }).catch((e)=>{
+        res.status(400).send();
     });
-},(e)=>{
-    res.status(400).send('something wrong with the connection');
-}).catch((e)=>{
-    res.status(400).send();
 });
-
 
 
 app.listen(port,()=>{
