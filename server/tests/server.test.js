@@ -18,13 +18,15 @@ beforeEach((done)=>{
     Todo.remove({}).then(()=>{
         return Todo.insertMany(todos).then(()=>{
             done();
-        },()=>{
+        },(e)=>{
 
         });
     },(e)=>{
 
     });
 });
+
+
 describe('POST /todos',()=> {
     it('Should create a new todos', (done) => {
         var text = "test todo";
@@ -43,7 +45,7 @@ describe('POST /todos',()=> {
                 expect(todo.length).toBe(1);
                 expect(todo[0].text).toBe(text);
                 done();
-            }).catch((err) => done(err));
+            },()=>{}).catch((err) => done(err));
         });
     });
 
@@ -60,7 +62,7 @@ describe('POST /todos',()=> {
             Todo.find().then((todo) => {
                 expect(todo.length).toBe(2);
                 done();
-            }).catch((err) => done(err));
+            },(e)=>{}).catch((err) => done(err));
         });
     });
 });
@@ -91,16 +93,24 @@ describe('GET /todos/:id', () =>{
                 expect(res.body.text).toBe(todos[0].text);
             }).end(done);
     });
+
+
     it('Should return 404 if not found',(done)=>{
         request(app)
             .get(`/todos/5b06cf3e30b28974df13abec`)
-            .expect(404).end(done);
+            .expect(404)
+            .expect((res)=>{
+
+            }).end(done);
     });
 
     it('Should return 400 if invalid id',(done)=>{
         request(app)
             .get(`/todos/12`)
-            .expect(400).end(done);
+            .expect(400)
+            .expect((res)=>{
+
+            }).end(done);
     });
 
 
@@ -125,7 +135,7 @@ describe('DELETE /todos/:id',()=>{
             Todo.findById(second_todo_id).then((todo)=>{
                 expect(todo).toBeFalsy();
                 done();
-            }).catch((e)=>{
+            },(e)=>{}).catch((e)=>{
                 done(e);
             });
         });
@@ -142,9 +152,6 @@ describe('DELETE /todos/:id',()=>{
             if(err){
                 return done(err);
             }
-            request(app)
-                .delete(`/todos/${second_todo_id}`)
-                .expect(404);
         });
         done();
     });
