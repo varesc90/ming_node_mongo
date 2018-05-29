@@ -10,7 +10,9 @@ const todos = [
         text:"first test todo"
     }, {
         _id: new ObjectID(),
-        text:"second test todo"
+        text:"second test todo",
+        completed:true,
+        completedAt:123123123
     }];
 beforeEach((done)=>{
     Todo.remove({}).then(()=>{
@@ -152,6 +154,61 @@ describe('DELETE /todos/:id',()=>{
         request(app)
             .delete(`/todos/5b06cf3e30b28974df13ab`)
             .expect(404).end((err,res)=>{
+            if(err){
+                return done(err);
+            }
+            done();
+        });
+    });
+});
+
+describe('PATCH /todos/:id', ()=>{
+    var id = todos[0]._id.toString();
+    var body = {completed:true};
+    it('Should update completed to true and fill in createdAt', (done)=>{
+        request(app)
+            .patch(`/todos/${id}`)
+            .send(body)
+            .expect(200)
+            .expect((res)=>{
+                expect(res.body.todo.completed).toBe(true);
+                expect(res.body.todo.completedAt).toBeTruthy();
+            }).end((err,res)=>{
+            if(err){
+                return done(err);
+            }
+            done();
+        });
+    });
+
+    it('Should update text to new text', (done)=>{
+        var id = todos[0]._id.toString();
+        var body = {text:'new text'};
+        request(app)
+            .patch(`/todos/${id}`)
+            .send(body)
+            .expect(200)
+            .expect((res)=>{
+                expect(res.body.todo.text).toBe(body.text);
+            }).end((err,res)=>{
+            if(err){
+                return done(err);
+            }
+            done();
+        });
+    });
+
+    it('Should set completed to false and unset completedAt', (done)=>{
+        var id = todos[1]._id.toString();
+        var body = {completed:false};
+        request(app)
+            .patch(`/todos/${id}`)
+            .send(body)
+            .expect(200)
+            .expect((res)=>{
+                expect(res.body.todo.completed).toBeFalsy();
+                expect(res.body.todo.completedAt).toBeFalsy();
+            }).end((err,res)=>{
             if(err){
                 return done(err);
             }
