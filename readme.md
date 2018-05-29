@@ -6,6 +6,7 @@
 - Mongoose ORM (Object Relation Mapping)
 - Express
 - Body-parser
+- Lodash 
 
 ### DEV
 - Mocha
