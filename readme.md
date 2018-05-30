@@ -11,9 +11,14 @@
 - Express
 - Body-parser
 - Lodash 
+- Validator
+- Jsonwebtoken
+
+
 
 ### DEV
 - Mocha
 - Expect
 - Nodemon
 - Supertest
+- Crypto js // not implementing
