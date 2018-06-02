@@ -4,6 +4,7 @@ const _ = require("lodash");
 const express = require("express");
 const bodyParser = require("body-parser");
 const {ObjectID} = require('mongodb');
+const bcrypt = require('bcryptjs');
 
 
 var {mongoose} = require("./db/mongoose");
@@ -34,7 +35,7 @@ app.get('/todos',(req,res)=>{
     Todo.find().then((todos)=>{
         res.send({
             todos,
-            });
+        });
     },(e)=>{
         res.status(400).send(e);
     });
@@ -72,11 +73,11 @@ app.get('/users/me', authenticate, (req,res)=>{
 app.delete('/todos/:id',(req,res)=>{
     var id = req.params.id;
     if(!ObjectID.isValid(id)){
-       return res.status(404).send('invalid Id');
+        return res.status(404).send('invalid Id');
     }
     Todo.findByIdAndRemove(id).then((todo)=>{
         if(todo){
-           return res.status(200).send({todo});
+            return res.status(200).send({todo});
         }
         return res.status(404).send("Could not find your Todo");
     }).catch((e)=>{
@@ -117,12 +118,16 @@ app.patch('/todos/:id',(req,res)=>{
 });
 
 app.post('/users',(req,res)=>{
-   var body = _.pick(req.body,['email','password']);
+    var body = _.pick(req.body,['email','password']);
+    bcrypt.genSalt(10,(err,salt)=>{
+        bcrypt.hash(body.password,salt,(err,hash)=>{
+            body.password = hash;
+        });
+    });
     var user = new User(body);
 
     user.save().then((user)=>{
         return user.generateAuthToken();
-
     },(err)=>{
         res.status(400).send(err);
     }).then((token)=>{

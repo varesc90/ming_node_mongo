@@ -13,6 +13,7 @@
 - Lodash 
 - Validator
 - Jsonwebtoken
+- Bcryptjs
 
 
 
