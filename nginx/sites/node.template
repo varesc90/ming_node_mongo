@@ -1,0 +1,20 @@
+# environment variables
+# WEB_REVERSE_PROXY_PORT ${WEB_REVERSE_PROXY_PORT}
+
+
+upstream my-app {
+    server 172.17.0.1:3000 weight=1;
+}
+
+server {
+    listen 80 default_server;
+
+    location / {
+        proxy_pass http://my-app;
+    }
+
+    location /.well-known/acme-challenge/ {
+        root /var/www/letsencrypt/;
+        log_not_found off;
+    }
+}
