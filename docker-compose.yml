@@ -2,8 +2,6 @@ version: '3.3'
 
 services:
 
-
-
   db:
     image: mongo
     ports:
@@ -34,3 +32,16 @@ services:
       - "8000:80"
       - "443:443"
     tty: true
+
+  react-app:
+    container_name: react-app
+    build:
+      context: ./react-app
+      dockerfile: Dockerfile
+    volumes:
+      - './react-app:/usr/src/app'
+      - '/usr/src/app/node_modules'
+    ports:
+      - '3001:3001'
+    environment:
+      - NODE_ENV=development

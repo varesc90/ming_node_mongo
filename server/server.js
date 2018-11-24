@@ -5,6 +5,9 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const {ObjectID} = require('mongodb');
 const bcrypt = require('bcryptjs');
+var cors = require('cors');
+
+
 
 
 var {mongoose} = require("./db/mongoose");
@@ -13,10 +16,12 @@ var {User} = require("./models/user");
 var {authenticate} = require("./middleware/authenticate");
 
 var app = express();
+app.use(cors())
 
 const port = process.env.PORT || 3000;
 
 app.use(bodyParser.json());
+
 
 app.post('/todos',authenticate,(req,res)=>{
     var todo = new Todo({
