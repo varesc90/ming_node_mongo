@@ -154,7 +154,11 @@ app.post('/users',(req,res)=>{
     }).catch((e)=>{});
 });
 
-app.post('/users/login',(req,res)=>{
+var corsOptions = {
+    exposedHeaders:['x-auth']// some legacy browsers (IE11, various SmartTVs) choke on 204
+}
+
+app.post('/users/login',cors(corsOptions),(req,res)=>{
 
     var body = _.pick(req.body,['email','password']);
     User.findByCredentials(body.email,body.password).then((user)=>{
